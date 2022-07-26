@@ -17,7 +17,7 @@ import java.util.Iterator;
 @RestController
 @ControllerAdvice
 public class ProductController {
-    private static final Logger logger =
+    public static final Logger logger =
             LoggerFactory.getLogger(ProductController.class);
     static HashMap<Integer, Product> productHashMap = new HashMap<>();
 
@@ -90,17 +90,9 @@ public class ProductController {
 
         return  new ResponseEntity("Product deleted succesfully", HttpStatus.OK);
     }
-    @Autowired
-    RestTemplate restTemplate;
-    @RequestMapping("/template/getProducts")
-    public String getProductFromApi(){
-        String url ="http://localhost:4431/getAllProducts";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        return  restTemplate.exchange(url,HttpMethod.GET,httpEntity,String.class).getBody();
-    }
+
+
 
 
 }
