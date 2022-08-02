@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Product;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import netscape.javascript.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,14 +61,20 @@ public class ConsumeWebService {
 
 
     @RequestMapping(value = "/template/product", method = RequestMethod.POST )
-    public String addProductToApi(@RequestBody Product product){
+    public ResponseEntity addProductToApi(@RequestBody Product product){
         String url = "http://localhost:4431/createProduct";
 
         ProductController.logger.info("This is the product object " + product.toString());
         HttpHeaders httpHeaders  = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<Product> httpEntity = new HttpEntity<Product>(product,httpHeaders);
-        return restTemplate.exchange(url, HttpMethod.POST, httpEntity,String.class).getBody();
+
+        String stringResponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity,String.class).getBody();
+        HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put("response",stringResponse );
+
+//        return  new ResponseEntity("", HttpStatus.CREATED);
+        return new ResponseEntity(hashMap.values(), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/template/productid/{productid}", method = RequestMethod.PUT)
