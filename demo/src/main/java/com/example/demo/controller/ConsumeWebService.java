@@ -94,4 +94,36 @@ public class ConsumeWebService {
         return restTemplate.exchange(url, HttpMethod.DELETE, httpEntity,String.class).getBody();
     }
 
+
+    @RequestMapping(value = "/remindRestTemplatePost", method = RequestMethod.POST)
+    public ResponseEntity remindRestTemplate(@RequestBody Product product){
+        String url = "http://localhost:4431/remindpost";
+        HttpHeaders httpHeaders  = new HttpHeaders();
+        HttpEntity<Product> httpEntity = new HttpEntity<Product>(product,httpHeaders);
+        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+       ResponseEntity <Object[]> responseEntity  = restTemplate.exchange(url, HttpMethod.POST, httpEntity,Object[].class);
+       Object[] objects = responseEntity.getBody();
+       ObjectMapper objectMapper = new ObjectMapper();
+       Stream <Object> objectStream = Arrays.stream(objects);
+      Stream <Object> stream = objectStream.map((object1)->{
+           return objectMapper.convertValue(object1,Product.class);
+       });
+
+
+
+
+
+
+//        Stream<Object> objectStream  = Arrays.stream(objects);
+//
+//
+//        Stream<Object> objectStream1 = objectStream.map((object)->{
+//            return objectMapper.convertValue(object, Product.class);
+//        });
+
+        List<Object> productList = stream.collect(Collectors.toList());
+
+        return  new ResponseEntity<>(productList, HttpStatus.OK);
+//       Arrays.stream(object).sequential()
+    }
 }

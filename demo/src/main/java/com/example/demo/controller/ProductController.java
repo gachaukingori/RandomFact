@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.exceptions.ProductNotFoundException;
+import com.example.demo.model.JSONResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.model.Product;
@@ -20,6 +21,7 @@ public class ProductController {
     public static final Logger logger =
             LoggerFactory.getLogger(ProductController.class);
     static HashMap<Integer, Product> productHashMap = new HashMap<>();
+    static JSONResponse jsonResponse = new JSONResponse();
 
     static {
         Product honey = new Product();
@@ -63,7 +65,10 @@ public class ProductController {
     public ResponseEntity createProduct(@RequestBody Product product, String name) {
         logger.info("This is the product object " + product.toString());
         productHashMap.put(product.getId(), product);
-        return new ResponseEntity("Product succesfully created", HttpStatus.CREATED);
+//        HashMap<String, String> responseMap = new HashMap<>();
+        jsonResponse.setMessage("product created successfully");
+        jsonResponse.setStatus(HttpStatus.CREATED);
+        return new ResponseEntity(jsonResponse, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/updateProduct/{id}", method = RequestMethod.PUT)
@@ -82,7 +87,10 @@ public class ProductController {
 
             }
         });
-        return new ResponseEntity("Product updated successfuly", HttpStatus.OK);
+
+        jsonResponse.setMessage("Product updated successfuly");
+        jsonResponse.setStatus(HttpStatus.OK);
+        return new ResponseEntity(jsonResponse, HttpStatus.OK);
     }
     @RequestMapping(value = "/deleteProduct/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteProduct(@PathVariable("id") int productId){
@@ -91,7 +99,19 @@ public class ProductController {
         return  new ResponseEntity("Product deleted succesfully", HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/reminder/{pathreminder}", method = RequestMethod.GET)
+    public ResponseEntity quickReminderEndpoint( @PathVariable(name = "pathreminder") int pathReminder){
+        jsonResponse.setResponse("Path param " + pathReminder  );
+        return new ResponseEntity(jsonResponse, HttpStatus.OK);
+    }
 
+    @RequestMapping(value = "/remindpost",method = RequestMethod.POST)
+    public  ResponseEntity remindPostMethod(@RequestBody Product product){
+
+
+
+        return new ResponseEntity(product, HttpStatus.OK);
+    }
 
 
 
