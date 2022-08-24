@@ -99,9 +99,11 @@ public class ConsumeWebService {
     public ResponseEntity remindRestTemplate(@RequestBody Product product){
         String url = "http://localhost:4431/remindpost";
         HttpHeaders httpHeaders  = new HttpHeaders();
-        HttpEntity<Product> httpEntity = new HttpEntity<Product>(product,httpHeaders);
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<Product> httpEntity = new HttpEntity<Product>(product,httpHeaders);
        ResponseEntity <Object[]> responseEntity  = restTemplate.exchange(url, HttpMethod.POST, httpEntity,Object[].class);
+//       ResponseEntity <Object[]> responseEntity  = restTemplate.postForEntity(url,product, Object[].class);
+        logger.info(" Response eniity "+ responseEntity.toString());
        Object[] objects = responseEntity.getBody();
        ObjectMapper objectMapper = new ObjectMapper();
        Stream <Object> objectStream = Arrays.stream(objects);
@@ -110,20 +112,9 @@ public class ConsumeWebService {
        });
 
 
+//        List<Object> productList = stream.collect(Collectors.toList());
 
-
-
-
-//        Stream<Object> objectStream  = Arrays.stream(objects);
-//
-//
-//        Stream<Object> objectStream1 = objectStream.map((object)->{
-//            return objectMapper.convertValue(object, Product.class);
-//        });
-
-        List<Object> productList = stream.collect(Collectors.toList());
-
-        return  new ResponseEntity<>(productList, HttpStatus.OK);
+        return  new ResponseEntity<>("Product addded success", HttpStatus.OK);
 //       Arrays.stream(object).sequential()
     }
 }
